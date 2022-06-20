@@ -11,6 +11,9 @@ function editor:enter()
 	self.viewport = ViewportPanel()
 	self.filesystem = FilesystemPanel()
 	self.console = ConsolePanel()
+
+	self.popup = false
+	self.popupInput = {value = ""}
 end
 
 function editor:update(dt)
@@ -21,6 +24,31 @@ function editor:update(dt)
 
 	if self.ui:windowBegin("Scene", 0, 0, w, h*2.5, "border", "title", "scrollbar") then
 		self.scene:draw()
+
+		if self.popup then
+			if self.ui:popupBegin("static", "Name", lg.getWidth()/2-100, lg.getHeight()/2-75, 200, 150, "border", "title") then
+				self.ui:layoutRow("dynamic", 30, 1)
+
+				self.ui:edit("simple", self.popupInput)
+
+				self.ui:layoutRow("dynamic", 30, 2)
+
+				self.ui:spacing(2)
+
+				if self.ui:button("Cancel") then
+					self.popup = false
+					self.popupInput.value = ""
+				end
+
+				if self.ui:button("Save") then
+					signal.emit("popupAccept", self.popupInput.value)
+					self.popup = false
+					self.popupInput.value = ""
+				end
+
+				self.ui:popupEnd()
+			end
+		end
 	end
 	self.ui:windowEnd()
 
@@ -29,7 +57,7 @@ function editor:update(dt)
 	end
 	self.ui:windowEnd()
 
-	if self.ui:windowBegin("Viewport", w, 0, w*3, h*3.5, "border", "title", "scrollbar") then
+	if self.ui:windowBegin("Viewport", w, 0, w*3, h*3.5, "border", "title") then
 		self.viewport:draw()
 	end
 	self.ui:windowEnd()

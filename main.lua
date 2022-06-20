@@ -9,4 +9,6 @@ function love.load()
 
 	state.registerEvents()
 	state.switch(editor)
+
+	sc = state.current()
 end

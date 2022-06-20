@@ -2,6 +2,15 @@ ScenePanel = Object:extend()
 
 function ScenePanel:new()
 	self.currentScene = nil
+
+	self.save = false
+
+	signal.register("popupAccept", function(name)
+		if self.save then
+			self:saveScene(name)
+			self.save = false
+		end
+	end)
 end
 
 function ScenePanel:newScene()
@@ -11,40 +20,50 @@ function ScenePanel:newScene()
 	}
 end
 
-function ScenePanel:saveScene()
+function ScenePanel:saveScene(name)
 	if self.currentScene then
-		print(lf.write(project .. "/scenes/" .. self.currentScene.name .. ".json", json.encode(self.currentScene)))
+		self.currentScene.name = name
+		lf.write(project .. "/scenes/" .. self.currentScene.name .. ".json", json.encode(self.currentScene))
 	end
 end
 
 function ScenePanel:loadScene(scene)
-	state.current().console:log("Loading " .. scene)
+	sc.console:log("Loading " .. scene)
 
 	self.currentScene = json.decode(lf.read(project .. "/scenes/" .. scene))
 end
 
 function ScenePanel:draw()
-	state.current().ui:layoutRow("dynamic", 20, 1)
+	sc.ui:layoutRow("dynamic", 20, 1)
 
-	if state.current().ui:contextualBegin(100, 100, state.current().ui:windowGetBounds()) then
-		state.current().ui:layoutRow("dynamic", 20, 1)
+	if sc.ui:contextualBegin(100, 100, sc.ui:windowGetBounds()) then
+		sc.ui:layoutRow("dynamic", 20, 1)
 
-		if state.current().ui:contextualItem("NEW") then
+		if sc.ui:contextualItem("NEW") then
 			self:newScene()
 		end
 
-		if state.current().ui:contextualItem("SAVE") then
-			self:saveScene()
+		if sc.ui:contextualItem("SAVE") then
+			if self.currentScene then
+				if self.currentScene.name == "unsaved" then
+					sc.popup = true
+					self.save = true
+				else
+					self:saveScene(self.currentScene.name)
+				end
+			end
 		end
 
-		state.current().ui:contextualEnd()
+		sc.ui:contextualEnd()
 	end
 
 	if self.currentScene then
-		state.current().ui:label("NAME: " .. self.currentScene.name)
+		sc.ui:label("NAME: " .. self.currentScene.name)
 
 		for _, entity in pairs(self.currentScene.entities) do
-			state.current().ui:label(entity.name)
+			if sc.ui:button(entity.name) then
+				sc.entity.currentEntity = entity
+			end
 		end
 	end
 end

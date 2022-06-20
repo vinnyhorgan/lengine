@@ -12,3 +12,23 @@ end
 function table.last(tab)
 	return tab[#tab]
 end
+
+function uuid()
+	local res = ""
+
+	for i = 1, 10 do
+		res = res .. string.char(math.random(97, 122))
+	end
+
+	return res
+end
+
+function getComponent(entity, name)
+	for _, component in pairs(entity.components) do
+		if component.name == name then
+			return component
+		end
+	end
+
+	return false
+end
