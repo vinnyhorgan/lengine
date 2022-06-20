@@ -3,7 +3,9 @@ editor = {}
 function editor:enter()
 	self.ui = nuklear.newUI()
 
-	self.console = Console()
+	self.scene = ScenePanel()
+	self.filesystem = FilesystemPanel()
+	self.console = ConsolePanel()
 end
 
 function editor:update(dt)
@@ -13,11 +15,7 @@ function editor:update(dt)
 	self.ui:frameBegin()
 
 	if self.ui:windowBegin("Scene", 0, 0, w, h*2.5, "border", "title") then
-		self.ui:layoutRow("dynamic", 30, 1)
-
-		if self.ui:button("Bella") then
-			self.console:log("PORCODIO")
-		end
+		self.scene:draw()
 	end
 	self.ui:windowEnd()
 
@@ -33,9 +31,8 @@ function editor:update(dt)
 	end
 	self.ui:windowEnd()
 
-	if self.ui:windowBegin("Filesystem", 0, h*2.5, w, h*2.5, "border", "title") then
-		self.ui:layoutRow("dynamic", 30, 1)
-		self.ui:label("Hello, world!")
+	if self.ui:windowBegin("Filesystem", 0, h*2.5, w, h*2.5, "border", "title", "scrollbar") then
+		self.filesystem:draw()
 	end
 	self.ui:windowEnd()
 

@@ -1,11 +1,11 @@
-Console = Object:extend()
+ConsolePanel = Object:extend()
 
-function Console:new()
+function ConsolePanel:new()
 	self.buffer = {}
 	self.scroll = false
 end
 
-function Console:log(text)
+function ConsolePanel:log(text)
 	local timestamp = os.date("[%H:%M:%S] ")
 
 	table.insert(self.buffer, timestamp .. text)
@@ -13,7 +13,7 @@ function Console:log(text)
 	self.scroll = true
 end
 
-function Console:draw()
+function ConsolePanel:draw()
 	state.current().ui:layoutRow("dynamic", 12, 1)
 
 	for _, log in pairs(self.buffer) do
