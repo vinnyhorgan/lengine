@@ -1,9 +1,14 @@
 editor = {}
 
 function editor:enter()
+	lf.createDirectory(project)
+	lf.createDirectory(project .. "/scenes")
+
 	self.ui = nuklear.newUI()
 
 	self.scene = ScenePanel()
+	self.entity = EntityPanel()
+	self.viewport = ViewportPanel()
 	self.filesystem = FilesystemPanel()
 	self.console = ConsolePanel()
 end
@@ -14,20 +19,18 @@ function editor:update(dt)
 
 	self.ui:frameBegin()
 
-	if self.ui:windowBegin("Scene", 0, 0, w, h*2.5, "border", "title") then
+	if self.ui:windowBegin("Scene", 0, 0, w, h*2.5, "border", "title", "scrollbar") then
 		self.scene:draw()
 	end
 	self.ui:windowEnd()
 
-	if self.ui:windowBegin("Inspector", w*4, 0, w, h*5, "border", "title") then
-		self.ui:layoutRow("dynamic", 30, 1)
-		self.ui:label("Hello, world!")
+	if self.ui:windowBegin("Entity", w*4, 0, w, h*5, "border", "title", "scrollbar") then
+		self.entity:draw()
 	end
 	self.ui:windowEnd()
 
-	if self.ui:windowBegin("Viewport", w, 0, w*3, h*3.5, "border", "title") then
-		self.ui:layoutRow("dynamic", 30, 1)
-		self.ui:label("Hello, world!")
+	if self.ui:windowBegin("Viewport", w, 0, w*3, h*3.5, "border", "title", "scrollbar") then
+		self.viewport:draw()
 	end
 	self.ui:windowEnd()
 

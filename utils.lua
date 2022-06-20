@@ -8,3 +8,7 @@ end
 function table.pop(tab)
 	table.remove(tab, #tab)
 end
+
+function table.last(tab)
+	return tab[#tab]
+end
