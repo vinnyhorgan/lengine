@@ -31,25 +31,45 @@ end
 
 function EntityPanel:addComponent(name)
 	if self.currentEntity then
-		if name == "spriterenderer" then
-			table.insert(self.currentEntity.components, {
-				name = "spriterenderer",
-				texture = ""
-			})
+		local hasComponent = getComponent(self.currentEntity, name)
 
-			sc().console:log("Added component: Sprite Renderer")
-		elseif name == "script" then
-			table.insert(self.currentEntity.components, {
-				name = "script",
-				script = ""
-			})
+		if not hasComponent then
+			if name == "spriterenderer" then
+				table.insert(self.currentEntity.components, {
+					name = "spriterenderer",
+					texture = ""
+				})
 
-			sc().console:log("Added component: Script")
+				sc().console:log("Added component: Sprite Renderer")
+			elseif name == "script" then
+				table.insert(self.currentEntity.components, {
+					name = "script",
+					file = ""
+				})
+
+				sc().input:addScript()
+
+				sc().console:log("Added component: Script")
+			else
+				sc().console:log("Error adding component: " .. name .. " does not exist")
+			end
 		else
-			sc().console:log("Error adding component: " .. name .. " does not exist")
+			sc().console:log("Cannot add component: already added")
 		end
 	else
 		sc().console:log("Cannot add component: no entity selected")
+	end
+end
+
+function EntityPanel:addScript(name)
+	local success, message = lf.write(project .. "/scripts/" .. name .. ".lua", "")
+
+	if success then
+		getComponent(self.currentEntity, "script").file = name
+
+		sc().console:log("Created script: " .. name .. ".lua")
+	else
+		sc().console:log("Error creating script: " .. message)
 	end
 end
 
@@ -62,34 +82,44 @@ function EntityPanel:draw()
 		for _, component in pairs(self.currentEntity.components) do
 			sc().ui:layoutRow("dynamic", 25, 1)
 
-			sc().ui:label(component.name)
-
-			sc().ui:layoutRow("dynamic", 25, 2)
+			sc().ui:spacing(1)
 
 			if component.name == "transform" then
-				sc().ui:label("X " .. component.x)
-				sc().ui:edit("simple", self.transformXInput)
-				sc().ui:label("Y " .. component.y)
-				sc().ui:edit("simple", self.transformYInput)
+				sc().ui:label("Transform")
 
-				if sc().ui:button("Save") then
-					component.x = tonumber(self.transformXInput.value) or component.x
-					component.y = tonumber(self.transformYInput.value) or component.y
+				sc().ui:label("X " .. component.x)
+
+				if sc().ui:edit("simple", self.transformXInput) == "active" and lk.isDown("return") then
+					component.x = tonumber(self.transformXInput.value)
+				end
+
+				sc().ui:label("Y " .. component.y)
+
+				if sc().ui:edit("simple", self.transformYInput) == "active" and lk.isDown("return") then
+					component.y = tonumber(self.transformYInput.value)
 				end
 			elseif component.name == "spriterenderer" then
-				sc().ui:label("TEXTURE " .. component.texture)
-				sc().ui:edit("simple", self.spriterendererTextureInput)
+				sc().ui:label("Sprite Renderer")
 
-				if sc().ui:button("Save") then
+				sc().ui:label("TEXTURE " .. component.texture)
+
+				if sc().ui:edit("simple", self.spriterendererTextureInput) == "active" and lk.isDown("return") then
 					component.texture = self.spriterendererTextureInput.value
 					sc().scene:loadImages()
 				end
 			elseif component.name == "script" then
-				sc().ui:label("SRIPT " .. component.script)
-				sc().ui:edit("simple", self.scriptScriptInput)
+				sc().ui:label("Script")
 
-				if sc().ui:button("Save") then
-					component.script = self.scriptScriptInput.value
+				sc().ui:label("FILE " .. component.file)
+
+				if sc().ui:edit("simple", self.scriptScriptInput) == "active" and lk.isDown("return") then
+					component.file = self.scriptScriptInput.value
+				end
+			end
+
+			if component.name ~= "transform" then
+				if sc().ui:button("Remove") then
+					removeComponent(self.currentEntity, component.name)
 				end
 			end
 		end

@@ -8,5 +8,5 @@ function love.load()
 	loader.require("states")
 
 	state.registerEvents()
-	state.switch(editor)
+	state.switch(splash)
 end

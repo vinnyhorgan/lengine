@@ -34,6 +34,16 @@ function FilesystemPanel:draw()
 				if sc().ui:button(item) then
 					sc().scene:loadScene(item)
 				end
+			elseif extension == ".lua" then
+				if sc().ui:button(item) then
+					if sc().settings.editCommandInput.value == "" then
+						sc().console:log("WARNING: edit command not set")
+					else
+						os.execute(sc().settings.editCommandInput.value .. " " .. lf.getSaveDirectory() .. "/" .. project .. "/scripts/" .. item)
+
+						sc().console:log("Editing file: " .. item)
+					end
+				end
 			else
 				sc().ui:label(item)
 			end

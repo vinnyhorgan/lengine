@@ -32,3 +32,11 @@ function getComponent(entity, name)
 
 	return false
 end
+
+function removeComponent(entity, name)
+	for i, component in pairs(entity.components) do
+		if component.name == name then
+			table.remove(entity.components, i)
+		end
+	end
+end

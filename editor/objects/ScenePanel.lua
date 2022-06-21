@@ -11,9 +11,13 @@ end
 
 function ScenePanel:run()
 	if self.currentScene then
-		os.execute("love ../runtime " .. self.currentScene.name)
+		if sc().settings.runCommandInput.value == "" then
+			sc().console:log("WARNING: run command not set")
+		else
+			os.execute(sc().settings.runCommandInput.value .. " " .. self.currentScene.name)
 
-		sc().console:log("Running scene: " .. self.currentScene.name)
+			sc().console:log("Running scene: " .. self.currentScene.name)
+		end
 	else
 		sc().console:log("Cannot run: no scene loaded")
 	end
@@ -68,6 +72,10 @@ function ScenePanel:loadImages()
 					self.imageCache[entity.id] = lg.newImage(spriterenderer.texture)
 
 					sc().console:log("Loaded texture: " .. spriterenderer.texture)
+				else
+					self.imageCache[entity.id] = nil
+
+					sc().console:log("Cannot load texture: file doesn't exist")
 				end
 			end
 		end
@@ -125,8 +133,12 @@ function ScenePanel:draw()
 		sc().ui:menuEnd()
 	end
 
+	sc().ui:spacing(1)
+
 	if self.currentScene then
 		sc().ui:label("NAME: " .. self.currentScene.name)
+
+		sc().ui:spacing(1)
 
 		for _, entity in pairs(self.currentScene.entities) do
 			if sc().ui:button(entity.name) then

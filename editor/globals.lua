@@ -8,6 +8,7 @@ lg = love.graphics
 lf = love.filesystem
 lm = love.mouse
 lw = love.window
+lk = love.keyboard
 
 project = "test"
 

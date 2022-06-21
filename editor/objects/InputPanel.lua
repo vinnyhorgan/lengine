@@ -17,6 +17,11 @@ function InputPanel:newEntity()
 	self.mode = "newEntity"
 end
 
+function InputPanel:addScript()
+	self.open = true
+	self.mode = "addScript"
+end
+
 function InputPanel:draw()
 	sc().ui:layoutRow("dynamic", 30, 1)
 
@@ -39,6 +44,18 @@ function InputPanel:draw()
 
 		if sc().ui:button("Create") then
 			sc().entity:newEntity(self.input.value)
+			self.input.value = ""
+			self.open = false
+		end
+	elseif self.mode == "addScript" then
+		sc().ui:label("Script Name")
+		sc().ui:edit("simple", self.input)
+
+		sc().ui:spacing(1)
+
+		if sc().ui:button("Create") then
+			sc().entity:addScript(self.input.value)
+
 			self.input.value = ""
 			self.open = false
 		end
