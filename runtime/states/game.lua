@@ -7,6 +7,12 @@ function game:enter(prev, args)
 
 	file:close()
 
+	file = io.open("/home/mary/.local/share/love/editor/test/settings.json", "r")
+
+	self.settings = json.decode(file:read("*all"))
+
+	file:close()
+
 	self.imageCache = {}
 	self.scriptCache = {}
 
@@ -42,7 +48,7 @@ function game:update(dt)
 end
 
 function game:draw()
-	lg.clear(135/255, 206/255, 235/255)
+	lg.clear(self.settings.backgroundColor.r/255, self.settings.backgroundColor.g/255, self.settings.backgroundColor.b/255)
 
 	for _, entity in pairs(self.scene.entities) do
 		local transform = getComponent(entity, "transform")

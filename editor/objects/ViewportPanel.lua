@@ -15,9 +15,9 @@ function ViewportPanel:resizeCanvas(width, height)
 end
 
 function ViewportPanel:draw()
-	sc.ui:layoutRow("static", self.height, self.width, 1)
+	sc().ui:layoutRow("static", self.height, self.width, 1)
 
-	local x, y, w, h = sc.ui:windowGetBounds()
+	local x, y, w, h = sc().ui:windowGetBounds()
 
 	w = w - 20
 	h = h - 45
@@ -27,22 +27,23 @@ function ViewportPanel:draw()
 	end
 
 	lg.setCanvas(self.canvas)
-		lg.clear(135/255, 206/255, 235/255)
+		r, g, b = nuklear.colorParseRGBA(sc().settings.backgroundColor)
+		lg.clear(r/255, g/255, b/255)
 
-		if sc.scene.currentScene then
-			for _, entity in pairs(sc.scene.currentScene.entities) do
+		if sc().scene.currentScene then
+			for _, entity in pairs(sc().scene.currentScene.entities) do
 				local transform = getComponent(entity, "transform")
 				local spriterenderer = getComponent(entity, "spriterenderer")
 
 				if spriterenderer then
-					local texture = sc.scene.imageCache[entity.id]
+					local texture = sc().scene.imageCache[entity.id]
 					if texture then
 						lg.draw(texture, transform.x, transform.y)
 					end
 				end
 
-				if sc.entity.currentEntity then
-					if entity.id == sc.entity.currentEntity.id then
+				if sc().entity.currentEntity then
+					if entity.id == sc().entity.currentEntity.id then
 						lg.setColor(1, 0, 0)
 						lg.line(transform.x, transform.y, transform.x + 50, transform.y)
 						lg.setColor(0, 0, 1)
@@ -54,5 +55,5 @@ function ViewportPanel:draw()
 		end
 	lg.setCanvas()
 
-	sc.ui:image(self.canvas)
+	sc().ui:image(self.canvas)
 end

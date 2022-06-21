@@ -14,10 +14,10 @@ function ConsolePanel:log(text)
 end
 
 function ConsolePanel:draw()
-	sc.ui:layoutRow("dynamic", 12, 1)
+	sc().ui:layoutRow("dynamic", 12, 1)
 
 	for _, log in pairs(self.buffer) do
-		sc.ui:label(log)
+		sc().ui:label(log)
 	end
 
 	if self.scroll then
@@ -27,7 +27,7 @@ function ConsolePanel:draw()
 			target = target + 12
 		end
 
-		sc.ui:windowSetScroll(0, target)
+		sc().ui:windowSetScroll(0, target)
 
 		self.scroll = false
 	end

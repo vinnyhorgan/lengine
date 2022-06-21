@@ -45,7 +45,7 @@ function editor:update(dt)
 	self.ui:windowEnd()
 
 	if self.settings.open then
-		if self.ui:windowBegin("Settings", w*2.5-150, h*2.5-100, 300, 200, "border", "title", "scrollbar", "movable") then
+		if self.ui:windowBegin("Settings", w*2.5-200, h*2.5-200, 400, 400, "border", "title", "scrollbar", "movable") then
 			self.settings:draw()
 		end
 		self.ui:windowEnd()

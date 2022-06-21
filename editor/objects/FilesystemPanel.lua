@@ -7,7 +7,7 @@ function FilesystemPanel:new()
 end
 
 function FilesystemPanel:draw()
-	sc.ui:layoutRow("dynamic", 20, 1)
+	sc().ui:layoutRow("dynamic", 20, 1)
 
 	local path = ""
 
@@ -15,9 +15,9 @@ function FilesystemPanel:draw()
 		path = path .. dir .. "/"
 	end
 
-	sc.ui:label("PATH: " .. path)
+	sc().ui:label("PATH: " .. path)
 
-	if sc.ui:button("..") then
+	if sc().ui:button("..") then
 		if table.last(self.currentPath) ~= project then
 			table.pop(self.currentPath)
 		end
@@ -31,14 +31,14 @@ function FilesystemPanel:draw()
 
 		if filetype == "file" then
 			if extension == "json" then
-				if sc.ui:button(item) then
-					sc.scene:loadScene(item)
+				if sc().ui:button(item) then
+					sc().scene:loadScene(item)
 				end
 			else
-				sc.ui:label(item)
+				sc().ui:label(item)
 			end
 		elseif filetype == "directory" then
-			if sc.ui:button(item) then
+			if sc().ui:button(item) then
 				table.insert(self.currentPath, item)
 			end
 		end

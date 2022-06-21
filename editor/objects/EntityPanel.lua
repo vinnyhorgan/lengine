@@ -10,7 +10,7 @@ function EntityPanel:new()
 end
 
 function EntityPanel:newEntity(name)
-	if sc.scene.currentScene then
+	if sc().scene.currentScene then
 		local entity = {
 			id = uuid(),
 			name = name,
@@ -19,13 +19,13 @@ function EntityPanel:newEntity(name)
 			}
 		}
 
-		table.insert(sc.scene.currentScene.entities, entity)
+		table.insert(sc().scene.currentScene.entities, entity)
 
 		self.currentEntity = entity
 
-		sc.console:log("Created entity: " .. name)
+		sc().console:log("Created entity: " .. name)
 	else
-		sc.console:log("Cannot create entity: no scene loaded")
+		sc().console:log("Cannot create entity: no scene loaded")
 	end
 end
 
@@ -37,58 +37,58 @@ function EntityPanel:addComponent(name)
 				texture = ""
 			})
 
-			sc.console:log("Added component: Sprite Renderer")
+			sc().console:log("Added component: Sprite Renderer")
 		elseif name == "script" then
 			table.insert(self.currentEntity.components, {
 				name = "script",
 				script = ""
 			})
 
-			sc.console:log("Added component: Script")
+			sc().console:log("Added component: Script")
 		else
-			sc.console:log("Error adding component: " .. name .. " does not exist")
+			sc().console:log("Error adding component: " .. name .. " does not exist")
 		end
 	else
-		sc.console:log("Cannot add component: no entity selected")
+		sc().console:log("Cannot add component: no entity selected")
 	end
 end
 
 function EntityPanel:draw()
-	sc.ui:layoutRow("dynamic", 20, 1)
+	sc().ui:layoutRow("dynamic", 20, 1)
 
 	if self.currentEntity then
-		sc.ui:label("NAME: " .. self.currentEntity.name)
+		sc().ui:label("NAME: " .. self.currentEntity.name)
 
 		for _, component in pairs(self.currentEntity.components) do
-			sc.ui:layoutRow("dynamic", 25, 1)
+			sc().ui:layoutRow("dynamic", 25, 1)
 
-			sc.ui:label(component.name)
+			sc().ui:label(component.name)
 
-			sc.ui:layoutRow("dynamic", 25, 2)
+			sc().ui:layoutRow("dynamic", 25, 2)
 
 			if component.name == "transform" then
-				sc.ui:label("X " .. component.x)
-				sc.ui:edit("simple", self.transformXInput)
-				sc.ui:label("Y " .. component.y)
-				sc.ui:edit("simple", self.transformYInput)
+				sc().ui:label("X " .. component.x)
+				sc().ui:edit("simple", self.transformXInput)
+				sc().ui:label("Y " .. component.y)
+				sc().ui:edit("simple", self.transformYInput)
 
-				if sc.ui:button("Save") then
+				if sc().ui:button("Save") then
 					component.x = tonumber(self.transformXInput.value) or component.x
 					component.y = tonumber(self.transformYInput.value) or component.y
 				end
 			elseif component.name == "spriterenderer" then
-				sc.ui:label("TEXTURE " .. component.texture)
-				sc.ui:edit("simple", self.spriterendererTextureInput)
+				sc().ui:label("TEXTURE " .. component.texture)
+				sc().ui:edit("simple", self.spriterendererTextureInput)
 
-				if sc.ui:button("Save") then
+				if sc().ui:button("Save") then
 					component.texture = self.spriterendererTextureInput.value
-					sc.scene:loadImages()
+					sc().scene:loadImages()
 				end
 			elseif component.name == "script" then
-				sc.ui:label("SRIPT " .. component.script)
-				sc.ui:edit("simple", self.scriptScriptInput)
+				sc().ui:label("SRIPT " .. component.script)
+				sc().ui:edit("simple", self.scriptScriptInput)
 
-				if sc.ui:button("Save") then
+				if sc().ui:button("Save") then
 					component.script = self.scriptScriptInput.value
 				end
 			end

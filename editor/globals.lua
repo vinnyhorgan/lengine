@@ -11,4 +11,4 @@ lw = love.window
 
 project = "test"
 
-sc = nil
+sc = state.current
