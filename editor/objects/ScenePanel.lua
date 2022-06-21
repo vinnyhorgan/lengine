@@ -5,12 +5,20 @@ function ScenePanel:new()
 
 	self.save = false
 
+	self.imageCache = {}
+
 	signal.register("popupAccept", function(name)
 		if self.save then
 			self:saveScene(name)
 			self.save = false
 		end
 	end)
+end
+
+function ScenePanel:run()
+	if self.currentScene then
+		os.execute("love ../runtime " .. self.currentScene.name)
+	end
 end
 
 function ScenePanel:newScene()
@@ -31,6 +39,24 @@ function ScenePanel:loadScene(scene)
 	sc.console:log("Loading " .. scene)
 
 	self.currentScene = json.decode(lf.read(project .. "/scenes/" .. scene))
+
+	self:loadImages()
+end
+
+function ScenePanel:loadImages()
+	for _, entity in pairs(self.currentScene.entities) do
+		local spriterenderer = getComponent(entity, "spriterenderer")
+
+		if spriterenderer then
+			if spriterenderer.texture ~= "" then
+				local exists = lf.getInfo(spriterenderer.texture)
+
+				if exists then
+					self.imageCache[entity.id] = lg.newImage(spriterenderer.texture)
+				end
+			end
+		end
+	end
 end
 
 function ScenePanel:draw()
@@ -52,6 +78,10 @@ function ScenePanel:draw()
 					self:saveScene(self.currentScene.name)
 				end
 			end
+		end
+
+		if sc.ui:contextualItem("RUN") then
+			self:run()
 		end
 
 		sc.ui:contextualEnd()

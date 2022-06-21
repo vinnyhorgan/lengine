@@ -32,8 +32,14 @@ function ViewportPanel:draw()
 		if sc.scene.currentScene then
 			for _, entity in pairs(sc.scene.currentScene.entities) do
 				local transform = getComponent(entity, "transform")
+				local spriterenderer = getComponent(entity, "spriterenderer")
 
-				lg.rectangle("fill", transform.x, transform.y, 25, 25)
+				if spriterenderer then
+					local texture = sc.scene.imageCache[entity.id]
+					if texture then
+						lg.draw(texture, transform.x, transform.y)
+					end
+				end
 
 				if sc.entity.currentEntity then
 					if entity.id == sc.entity.currentEntity.id then
