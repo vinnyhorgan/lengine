@@ -29,7 +29,7 @@ function game:enter(prev, args)
 				local exists = lf.getInfo(script.script .. ".lua")
 
 				if exists then
-					self.scriptCache[entity.id] = require(script.script)
+					self.scriptCache[entity.id] = require(script.script)()
 					self.scriptCache[entity.id]:enter(entity)
 				end
 			end

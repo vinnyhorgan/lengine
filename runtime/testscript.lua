@@ -1,4 +1,4 @@
-local test = {}
+local test = Object:extend()
 
 function test:enter(entity)
 	self.entity = entity

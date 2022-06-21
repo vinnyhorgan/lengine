@@ -31,6 +31,10 @@ function EntityPanel:newEntity(name)
 		table.insert(sc.scene.currentScene.entities, entity)
 
 		self.currentEntity = entity
+
+		sc.console:log("Created entity: " .. name)
+	else
+		sc.console:log("Cannot create entity: no scene loaded")
 	end
 end
 
@@ -41,36 +45,25 @@ function EntityPanel:addComponent(name)
 				name = "spriterenderer",
 				texture = ""
 			})
+
+			sc.console:log("Added component: Sprite Renderer")
 		elseif name == "script" then
 			table.insert(self.currentEntity.components, {
 				name = "script",
 				script = ""
 			})
+
+			sc.console:log("Added component: Script")
+		else
+			sc.console:log("Error adding component: " .. name .. " does not exist")
 		end
+	else
+		sc.console:log("Cannot add component: no entity selected")
 	end
 end
 
 function EntityPanel:draw()
 	sc.ui:layoutRow("dynamic", 20, 1)
-
-	if sc.ui:contextualBegin(180, 100, sc.ui:windowGetBounds()) then
-		sc.ui:layoutRow("dynamic", 20, 1)
-
-		if sc.ui:contextualItem("NEW") then
-			sc.popup = true
-			self.create = true
-		end
-
-		if sc.ui:contextualItem("ADD SPRITE RENDERER") then
-			self:addComponent("spriterenderer")
-		end
-
-		if sc.ui:contextualItem("ADD SCRIPT") then
-			self:addComponent("script")
-		end
-
-		sc.ui:contextualEnd()
-	end
 
 	if self.currentEntity then
 		sc.ui:label("NAME: " .. self.currentEntity.name)
