@@ -1,18 +1,12 @@
 ScenePanel = Object:extend()
 
 function ScenePanel:new()
+	lf.createDirectory(project)
+	lf.createDirectory(project .. "/scenes")
+
 	self.currentScene = nil
 
-	self.save = false
-
 	self.imageCache = {}
-
-	signal.register("popupAccept", function(name)
-		if self.save then
-			self:saveScene(name)
-			self.save = false
-		end
-	end)
 end
 
 function ScenePanel:run()
@@ -93,8 +87,7 @@ function ScenePanel:draw()
 		if sc.ui:menuItem("Save Scene") then
 			if self.currentScene then
 				if self.currentScene.name == "unsaved" then
-					sc.popup = true
-					self.save = true
+					sc.input:saveScene()
 				else
 					self:saveScene(self.currentScene.name)
 				end
@@ -106,8 +99,7 @@ function ScenePanel:draw()
 		end
 
 		if sc.ui:menuItem("New Entity") then
-			sc.popup = true
-			sc.entity.create = true
+			sc.input:newEntity()
 		end
 
 		if sc.ui:treePush("node", "Add Component") then
@@ -120,6 +112,14 @@ function ScenePanel:draw()
 			end
 
 			sc.ui:treePop()
+		end
+
+		if sc.ui:menuItem("Settings") then
+			sc.settings.open = true
+		end
+
+		if sc.ui:menuItem("About") then
+			sc.about.open = true
 		end
 
 		sc.ui:menuEnd()

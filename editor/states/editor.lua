@@ -1,9 +1,6 @@
 editor = {}
 
 function editor:enter()
-	lf.createDirectory(project)
-	lf.createDirectory(project .. "/scenes")
-
 	self.ui = nuklear.newUI()
 
 	self.scene = ScenePanel()
@@ -11,9 +8,9 @@ function editor:enter()
 	self.viewport = ViewportPanel()
 	self.filesystem = FilesystemPanel()
 	self.console = ConsolePanel()
-
-	self.popup = false
-	self.popupInput = {value = ""}
+	self.settings = SettingsPanel()
+	self.about = AboutPanel()
+	self.input = InputPanel()
 end
 
 function editor:update(dt)
@@ -24,31 +21,6 @@ function editor:update(dt)
 
 	if self.ui:windowBegin("Scene", 0, 0, w, h*2.5, "border", "title", "scrollbar") then
 		self.scene:draw()
-
-		if self.popup then
-			if self.ui:popupBegin("static", "Name", lg.getWidth()/2-100, lg.getHeight()/2-75, 200, 150, "border", "title") then
-				self.ui:layoutRow("dynamic", 30, 1)
-
-				self.ui:edit("simple", self.popupInput)
-
-				self.ui:layoutRow("dynamic", 30, 2)
-
-				self.ui:spacing(2)
-
-				if self.ui:button("Cancel") then
-					self.popup = false
-					self.popupInput.value = ""
-				end
-
-				if self.ui:button("Save") then
-					signal.emit("popupAccept", self.popupInput.value)
-					self.popup = false
-					self.popupInput.value = ""
-				end
-
-				self.ui:popupEnd()
-			end
-		end
 	end
 	self.ui:windowEnd()
 
@@ -72,14 +44,33 @@ function editor:update(dt)
 	end
 	self.ui:windowEnd()
 
+	if self.settings.open then
+		if self.ui:windowBegin("Settings", w*2.5-150, h*2.5-100, 300, 200, "border", "title", "scrollbar", "movable") then
+			self.settings:draw()
+		end
+		self.ui:windowEnd()
+	end
+
+	if self.about.open then
+		if self.ui:windowBegin("About", w*2.5-100, h*2.5-60, 200, 120, "border", "title", "movable") then
+			self.about:draw()
+		end
+		self.ui:windowEnd()
+	end
+
+	if self.input.open then
+		if self.ui:windowBegin("Input", w*2.5-100, h*2.5-110, 200, 220, "border", "title", "scrollbar", "movable") then
+			self.input:draw()
+		end
+		self.ui:windowEnd()
+	end
+
 	self.ui:frameEnd()
 end
 
 function editor:draw()
 	self.ui:draw()
 end
-
-
 
 function editor:keypressed(key, scancode, isrepeat)
 	self.ui:keypressed(key, scancode, isrepeat)

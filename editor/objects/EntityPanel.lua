@@ -3,15 +3,6 @@ EntityPanel = Object:extend()
 function EntityPanel:new()
 	self.currentEntity = nil
 
-	self.create = false
-
-	signal.register("popupAccept", function(name)
-		if self.create then
-			self:newEntity(name)
-			self.create = false
-		end
-	end)
-
 	self.transformXInput = {value = ""}
 	self.transformYInput = {value = ""}
 	self.spriterendererTextureInput = {value = ""}
