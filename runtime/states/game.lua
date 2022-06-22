@@ -32,10 +32,10 @@ function game:enter(prev, args)
 
 		if script then
 			if script.script ~= "" then
-				local exists = lf.getInfo(script.script .. ".lua")
+				local exists = fileExists("/home/mary/.local/share/love/editor/test/scripts/" .. script.file .. ".lua")
 
 				if exists then
-					self.scriptCache[entity.id] = require(script.script)()
+					self.scriptCache[entity.id] = dofile("/home/mary/.local/share/love/editor/test/scripts/" .. script.file .. ".lua")()
 					self.scriptCache[entity.id]:enter(entity)
 				end
 			end

@@ -30,7 +30,7 @@ function FilesystemPanel:draw()
 		local extension = string.sub(item, -4)
 
 		if filetype == "file" then
-			if extension == "json" then
+			if extension == "json" and item ~= "settings.json" then
 				if sc().ui:button(item) then
 					sc().scene:loadScene(item)
 				end
