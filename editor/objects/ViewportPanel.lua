@@ -5,6 +5,8 @@ function ViewportPanel:new()
 	self.height = 100
 
 	self.canvas = lg.newCanvas(self.width, self.height)
+
+	self.gizmo = Gizmo()
 end
 
 function ViewportPanel:resizeCanvas(width, height)
@@ -22,6 +24,9 @@ function ViewportPanel:draw()
 	w = w - 20
 	h = h - 45
 
+	local mouseX = lm.getX() - x - 11
+	local mouseY = lm.getY() - y - 37
+
 	if w ~= self.width or h ~= self.height then
 		self:resizeCanvas(w, h)
 	end
@@ -34,6 +39,7 @@ function ViewportPanel:draw()
 			for _, entity in pairs(sc().scene.currentScene.entities) do
 				local transform = getComponent(entity, "transform")
 				local spriterenderer = getComponent(entity, "spriterenderer")
+				local rigidbody = getComponent(entity, "rigidbody")
 
 				if spriterenderer then
 					local texture = sc().scene.imageCache[entity.id]
@@ -42,13 +48,13 @@ function ViewportPanel:draw()
 					end
 				end
 
+				if rigidbody then
+					lg.rectangle("line", transform.x, transform.y, 30, 30)
+				end
+
 				if sc().entity.currentEntity then
 					if entity.id == sc().entity.currentEntity.id then
-						lg.setColor(1, 0, 0)
-						lg.line(transform.x, transform.y, transform.x + 50, transform.y)
-						lg.setColor(0, 0, 1)
-						lg.line(transform.x, transform.y, transform.x, transform.y - 50)
-						lg.setColor(1, 1, 1)
+						self.gizmo:draw(entity, mouseX, mouseY)
 					end
 				end
 			end

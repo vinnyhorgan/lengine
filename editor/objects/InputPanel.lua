@@ -27,38 +27,35 @@ function InputPanel:draw()
 
 	if self.mode == "saveScene" then
 		sc().ui:label("Scene Name")
-		sc().ui:edit("simple", self.input)
 
-		sc().ui:spacing(1)
-
-		if sc().ui:button("Save") then
+		if sc().ui:edit("simple", self.input) == "active" and lk.isDown("return") then
 			sc().scene:saveScene(self.input.value)
 			self.input.value = ""
 			self.open = false
 		end
-	elseif self.mode == "newEntity" then
-		sc().ui:label("Entity Name")
-		sc().ui:edit("simple", self.input)
 
 		sc().ui:spacing(1)
+	elseif self.mode == "newEntity" then
+		sc().ui:label("Entity Name")
 
-		if sc().ui:button("Create") then
+		if sc().ui:edit("simple", self.input) == "active" and lk.isDown("return") then
 			sc().entity:newEntity(self.input.value)
 			self.input.value = ""
 			self.open = false
 		end
-	elseif self.mode == "addScript" then
-		sc().ui:label("Script Name")
-		sc().ui:edit("simple", self.input)
 
 		sc().ui:spacing(1)
+	elseif self.mode == "addScript" then
+		sc().ui:label("Script Name")
 
-		if sc().ui:button("Create") then
+		if sc().ui:edit("simple", self.input) == "active" and lk.isDown("return") then
 			sc().entity:addScript(self.input.value)
 
 			self.input.value = ""
 			self.open = false
 		end
+
+		sc().ui:spacing(1)
 	end
 
 	if sc().ui:button("Close") then

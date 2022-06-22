@@ -1,6 +1,10 @@
 game = {}
 
 function game:enter(prev, args)
+	lf.createDirectory("images")
+
+	self.world = wf.newWorld(0, 0, true)
+
 	local file = io.open("/home/mary/.local/share/love/editor/test/scenes/" .. args[1] .. ".json", "r")
 
 	self.scene = json.decode(file:read("*all"))
@@ -17,17 +21,29 @@ function game:enter(prev, args)
 	self.scriptCache = {}
 
 	for _, entity in pairs(self.scene.entities) do
+		local transform = getComponent(entity, "transform")
+
 		local spriterenderer = getComponent(entity, "spriterenderer")
 		local script = getComponent(entity, "script")
+		local rigidbody = getComponent(entity, "rigidbody")
 
 		if spriterenderer then
 			if spriterenderer.texture ~= "" then
-				local exists = lf.getInfo(spriterenderer.texture)
+				local exists = fileExists("/home/mary/.local/share/love/editor/test/assets/" .. spriterenderer.texture)
 
 				if exists then
+					copyFile("/home/mary/.local/share/love/editor/test/assets/" .. spriterenderer.texture, lf.getSaveDirectory() .. "/" .. spriterenderer.texture)
+
+
+					file = io.open("/home/mary/.local/share/love/editor/test/settings.json", "r")
+
 					self.imageCache[entity.id] = lg.newImage(spriterenderer.texture)
 				end
 			end
+		end
+
+		if rigidbody then
+			entity.collider = self.world:newRectangleCollider(transform.x, transform.y, 30, 30)
 		end
 
 		if script then
@@ -44,7 +60,7 @@ function game:enter(prev, args)
 end
 
 function game:update(dt)
-
+	self.world:update(dt)
 end
 
 function game:draw()
@@ -54,6 +70,7 @@ function game:draw()
 		local transform = getComponent(entity, "transform")
 		local spriterenderer = getComponent(entity, "spriterenderer")
 		local script = getComponent(entity, "script")
+		local rigidbody = getComponent(entity, "rigidbody")
 
 		if spriterenderer then
 			local texture = self.imageCache[entity.id]
@@ -70,5 +87,12 @@ function game:draw()
 				scriptz:update()
 			end
 		end
+
+		if rigidbody then
+			transform.x = entity.collider:getX() - 15
+			transform.y = entity.collider:getY() - 15
+		end
 	end
+
+	self.world:draw()
 end

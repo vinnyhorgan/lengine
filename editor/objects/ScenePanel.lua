@@ -3,6 +3,8 @@ ScenePanel = Object:extend()
 function ScenePanel:new()
 	lf.createDirectory(project)
 	lf.createDirectory(project .. "/scenes")
+	lf.createDirectory(project .. "/scripts")
+	lf.createDirectory(project .. "/assets")
 
 	self.currentScene = nil
 
@@ -66,10 +68,10 @@ function ScenePanel:loadImages()
 
 		if spriterenderer then
 			if spriterenderer.texture ~= "" then
-				local exists = lf.getInfo(spriterenderer.texture)
+				local exists = lf.getInfo(project .. "/assets/" .. spriterenderer.texture)
 
 				if exists then
-					self.imageCache[entity.id] = lg.newImage(spriterenderer.texture)
+					self.imageCache[entity.id] = lg.newImage(project .. "/assets/" .. spriterenderer.texture)
 
 					sc().console:log("Loaded texture: " .. spriterenderer.texture)
 				else
@@ -117,6 +119,10 @@ function ScenePanel:draw()
 
 			if sc().ui:menuItem("Script") then
 				sc().entity:addComponent("script")
+			end
+
+			if sc().ui:menuItem("Rigid Body") then
+				sc().entity:addComponent("rigidbody")
 			end
 
 			sc().ui:treePop()

@@ -1,4 +1,4 @@
-function CheckCollision(x1, y1, w1, h1, x2, y2, w2, h2)
+function checkCollision(x1, y1, w1, h1, x2, y2, w2, h2)
 	return x1 < x2 + w2 and
 			x2 < x1 + w1 and
 			y1 < y2 + h2 and
@@ -42,4 +42,16 @@ function fileExists(name)
 	else
 		return false
 	end
+end
+
+function copyFile(file1, file2)
+	local infile = io.open(file1, "r")
+	local contents = infile:read("*a")
+	infile:close()
+
+	os.execute("echo '' > " .. file2)
+
+	local outfile = io.open(file2, "w")
+	outfile:write(contents)
+	outfile:close()
 end

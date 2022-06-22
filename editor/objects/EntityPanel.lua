@@ -50,6 +50,10 @@ function EntityPanel:addComponent(name)
 				sc().input:addScript()
 
 				sc().console:log("Added component: Script")
+			elseif name == "rigidbody" then
+				table.insert(self.currentEntity.components, {
+					name = "rigidbody",
+				})
 			else
 				sc().console:log("Error adding component: " .. name .. " does not exist")
 			end
@@ -115,6 +119,8 @@ function EntityPanel:draw()
 				if sc().ui:edit("simple", self.scriptScriptInput) == "active" and lk.isDown("return") then
 					component.file = self.scriptScriptInput.value
 				end
+			elseif component.name == "rigidbody" then
+				sc().ui:label("Rigid Body")
 			end
 
 			if component.name ~= "transform" then
