@@ -3,8 +3,6 @@ game = {}
 function game:enter(prev, args)
 	lf.createDirectory("images")
 
-	self.world = wf.newWorld(0, 0, true)
-
 	local file = io.open("/home/mary/.local/share/love/editor/test/scenes/" .. args[1] .. ".json", "r")
 
 	self.scene = json.decode(file:read("*all"))
@@ -19,12 +17,16 @@ function game:enter(prev, args)
 
 	lw.setMode(self.settings.width, self.settings.height)
 
+	self.world = wf.newWorld(0, self.settings.gravity, true)
+
 	if self.settings.filter == "pixel" then
 		lg.setDefaultFilter("nearest", "nearest")
 	end
 
 	self.imageCache = {}
 	self.scriptCache = {}
+
+	self.collisionClasses = {}
 
 	for _, entity in pairs(self.scene.entities) do
 		local transform = getComponent(entity, "transform")
@@ -49,7 +51,25 @@ function game:enter(prev, args)
 		end
 
 		if rigidbody then
-			entity.collider = self.world:newRectangleCollider(transform.x, transform.y, 30, 30)
+			if not isInTable(self.collisionClasses, rigidbody.collisionClass) then
+				self.world:addCollisionClass(rigidbody.collisionClass)
+				table.insert(self.collisionClasses, rigidbody.collisionClass)
+			end
+
+			rigidbody.collider = self.world:newRectangleCollider(transform.x, transform.y, rigidbody.width, rigidbody.height)
+
+			if rigidbody.static then
+				rigidbody.collider:setType("static")
+			end
+
+			if rigidbody.fixedRotation then
+				rigidbody.collider:setFixedRotation(true)
+			end
+
+			rigidbody.collider:setCollisionClass(rigidbody.collisionClass)
+			rigidbody.collider:setObject(entity)
+
+			rigidbody.collider:setAngle(transform.rotation)
 		end
 
 		if script then
@@ -82,7 +102,11 @@ function game:draw()
 			local texture = self.imageCache[entity.id]
 
 			if texture then
-				lg.draw(texture, transform.x, transform.y, math.rad(transform.rotation), transform.scaleX, transform.scaleY)
+				if rigidbody then
+					lg.draw(texture, transform.x, transform.y, math.rad(transform.rotation), transform.scaleX, transform.scaleY, rigidbody.width / 2, rigidbody.height / 2)
+				else
+					lg.draw(texture, transform.x, transform.y, math.rad(transform.rotation), transform.scaleX, transform.scaleY)
+				end
 			end
 		end
 
@@ -95,8 +119,9 @@ function game:draw()
 		end
 
 		if rigidbody then
-			transform.x = entity.collider:getX() - 15
-			transform.y = entity.collider:getY() - 15
+			transform.x = rigidbody.collider:getX()
+			transform.y = rigidbody.collider:getY()
+			transform.rotation = math.deg(rigidbody.collider:getAngle())
 		end
 	end
 

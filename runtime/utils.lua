@@ -55,3 +55,13 @@ function copyFile(file1, file2)
 	outfile:write(contents)
 	outfile:close()
 end
+
+function isInTable(tab, item)
+	for _, i in pairs(tab) do
+		if i == item then
+			return true
+		end
+	end
+
+	return false
+end

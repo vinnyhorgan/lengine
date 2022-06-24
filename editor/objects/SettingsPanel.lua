@@ -9,6 +9,7 @@ function SettingsPanel:new()
 	self.filterInput = {value = ""}
 	self.widthInput = {value = ""}
 	self.heightInput = {value = ""}
+	self.gravityInput = {value = ""}
 
 	self:load()
 end
@@ -25,9 +26,13 @@ function SettingsPanel:load()
 		self.filterInput.value = settingsTable.filter
 		self.widthInput.value = settingsTable.width
 		self.heightInput.value = settingsTable.height
+		self.gravityInput.value = settingsTable.gravity
 
 		sc().console:log("Loaded settings")
 	else
+		self.widthInput.value = 800
+		self.heightInput.value = 640
+
 		sc().console:log("Error loading settings: " .. message)
 	end
 end
@@ -41,7 +46,8 @@ function SettingsPanel:save()
 		backgroundColor = {r = r, g = g, b = b},
 		filter = self.filterInput.value,
 		width = self.widthInput.value,
-		height = self.heightInput.value
+		height = self.heightInput.value,
+		gravity = self.gravityInput.value
 	}
 
 	local success, message = lf.write(project .. "/settings.json", json.encode(settingsTable))
@@ -76,6 +82,15 @@ function SettingsPanel:draw()
 
 		sc().ui:label("Filter ('blur', 'pixel')")
 		sc().ui:edit("simple", self.filterInput)
+
+		sc().ui:treePop()
+	end
+
+	if sc().ui:treePush("node", "Physics") then
+		sc().ui:layoutRow("dynamic", 30, 1)
+
+		sc().ui:label("Gravity")
+		sc().ui:edit("simple", self.gravityInput)
 
 		sc().ui:treePop()
 	end

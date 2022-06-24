@@ -10,6 +10,11 @@ function EntityPanel:new()
 	self.transformScaleYInput = {value = ""}
 	self.spriterendererTextureInput = {value = ""}
 	self.scriptScriptInput = {value = ""}
+	self.rigidbodyWidthInput = {value = ""}
+	self.rigidbodyHeightInput = {value = ""}
+	self.rigidbodyStaticInput = {value = false}
+	self.rigidbodyFixedRotationInput = {value = false}
+	self.rigidbodyCollisionClassInput = {value = ""}
 end
 
 function EntityPanel:newEntity(name)
@@ -66,6 +71,11 @@ function EntityPanel:addComponent(name)
 			elseif name == "rigidbody" then
 				table.insert(self.currentEntity.components, {
 					name = "rigidbody",
+					width = 20,
+					height = 20,
+					static = false,
+					fixedRotation = false,
+					collisionClass = "test"
 				})
 			else
 				sc().console:log("Error adding component: " .. name .. " does not exist")
@@ -107,31 +117,31 @@ function EntityPanel:draw()
 				sc().ui:label("X " .. component.x)
 
 				if sc().ui:edit("simple", self.transformXInput) == "active" and lk.isDown("return") then
-					component.x = tonumber(self.transformXInput.value)
+					component.x = tonumber(self.transformXInput.value) or 0
 				end
 
 				sc().ui:label("Y " .. component.y)
 
 				if sc().ui:edit("simple", self.transformYInput) == "active" and lk.isDown("return") then
-					component.y = tonumber(self.transformYInput.value)
+					component.y = tonumber(self.transformYInput.value) or 0
 				end
 
 				sc().ui:label("ROTATION " .. component.rotation)
 
 				if sc().ui:edit("simple", self.transformRotationInput) == "active" and lk.isDown("return") then
-					component.rotation = tonumber(self.transformRotationInput.value)
+					component.rotation = tonumber(self.transformRotationInput.value) or 0
 				end
 
 				sc().ui:label("SCALE X " .. component.scaleX)
 
 				if sc().ui:edit("simple", self.transformScaleXInput) == "active" and lk.isDown("return") then
-					component.scaleX = tonumber(self.transformScaleXInput.value)
+					component.scaleX = tonumber(self.transformScaleXInput.value) or 1
 				end
 
 				sc().ui:label("SCALE Y " .. component.scaleY)
 
 				if sc().ui:edit("simple", self.transformScaleYInput) == "active" and lk.isDown("return") then
-					component.scaleY = tonumber(self.transformScaleYInput.value)
+					component.scaleY = tonumber(self.transformScaleYInput.value) or 1
 				end
 			elseif component.name == "spriterenderer" then
 				sc().ui:label("Sprite Renderer")
@@ -152,6 +162,36 @@ function EntityPanel:draw()
 				end
 			elseif component.name == "rigidbody" then
 				sc().ui:label("Rigid Body")
+
+				sc().ui:label("WIDTH " .. component.width)
+
+				if sc().ui:edit("simple", self.rigidbodyWidthInput) == "active" and lk.isDown("return") then
+					component.width = tonumber(self.rigidbodyWidthInput.value) or 20
+				end
+
+				sc().ui:label("HEIGHT " .. component.height)
+
+				if sc().ui:edit("simple", self.rigidbodyHeightInput) == "active" and lk.isDown("return") then
+					component.height = tonumber(self.rigidbodyHeightInput.value) or 20
+				end
+
+				sc().ui:label("COLLISION CLASS " .. component.collisionClass)
+
+				if sc().ui:edit("simple", self.rigidbodyCollisionClassInput) == "active" and lk.isDown("return") then
+					component.collisionClass = self.rigidbodyCollisionClassInput.value
+				end
+
+				self.rigidbodyStaticInput.value = component.static
+
+				if sc().ui:checkbox("STATIC", self.rigidbodyStaticInput) then
+					component.static = self.rigidbodyStaticInput.value
+				end
+
+				self.rigidbodyFixedRotationInput.value = component.fixedRotation
+
+				if sc().ui:checkbox("FIXED ROTATION", self.rigidbodyFixedRotationInput) then
+					component.fixedRotation = self.rigidbodyFixedRotationInput.value
+				end
 			end
 
 			if component.name ~= "transform" then

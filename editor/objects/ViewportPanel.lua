@@ -68,7 +68,7 @@ function ViewportPanel:draw()
 		lg.line(-10000, 0, 10000, 0)
 		lg.line(0, -10000, 0, 10000)
 
-		lg.rectangle("line", 0, 0, sc().settings.widthInput.value, sc().settings.heightInput.value)
+		lg.rectangle("line", 0, 0, tonumber(sc().settings.widthInput.value) or 0, tonumber(sc().settings.heightInput.value) or 0)
 
 		lg.rectangle("fill", mouseX, mouseY, 1, 1)
 		lg.setColor(1, 1, 1)
@@ -87,7 +87,7 @@ function ViewportPanel:draw()
 				end
 
 				if rigidbody then
-					lg.rectangle("line", transform.x, transform.y, 30, 30)
+					lg.rectangle("line", transform.x, transform.y, rigidbody.width, rigidbody.height)
 				end
 
 				if sc().entity.currentEntity then
