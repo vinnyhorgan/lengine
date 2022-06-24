@@ -82,7 +82,7 @@ function game:draw()
 			local texture = self.imageCache[entity.id]
 
 			if texture then
-				lg.draw(texture, transform.x, transform.y, transform.rotation, transform.scaleX, transform.scaleY)
+				lg.draw(texture, transform.x, transform.y, math.rad(transform.rotation), transform.scaleX, transform.scaleY)
 			end
 		end
 
