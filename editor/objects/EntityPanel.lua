@@ -5,6 +5,9 @@ function EntityPanel:new()
 
 	self.transformXInput = {value = ""}
 	self.transformYInput = {value = ""}
+	self.transformRotationInput = {value = ""}
+	self.transformScaleXInput = {value = ""}
+	self.transformScaleYInput = {value = ""}
 	self.spriterendererTextureInput = {value = ""}
 	self.scriptScriptInput = {value = ""}
 end
@@ -15,7 +18,7 @@ function EntityPanel:newEntity(name)
 			id = uuid(),
 			name = name,
 			components = {
-				{name = "transform", x = 0, y = 0}
+				{name = "transform", x = 100, y = 100, rotation = 0, scaleX = 1, scaleY = 1}
 			}
 		}
 
@@ -27,6 +30,16 @@ function EntityPanel:newEntity(name)
 	else
 		sc().console:log("Cannot create entity: no scene loaded")
 	end
+end
+
+function EntityPanel:deleteEntity(entity)
+	for i, e in pairs(sc().scene.currentScene.entities) do
+		if e.id == entity.id then
+			table.remove(sc().scene.currentScene.entities, i)
+		end
+	end
+
+	self.currentEntity = nil
 end
 
 function EntityPanel:addComponent(name)
@@ -102,6 +115,24 @@ function EntityPanel:draw()
 				if sc().ui:edit("simple", self.transformYInput) == "active" and lk.isDown("return") then
 					component.y = tonumber(self.transformYInput.value)
 				end
+
+				sc().ui:label("ROTATION " .. component.rotation)
+
+				if sc().ui:edit("simple", self.transformRotationInput) == "active" and lk.isDown("return") then
+					component.rotation = tonumber(self.transformRotationInput.value)
+				end
+
+				sc().ui:label("SCALE X " .. component.scaleX)
+
+				if sc().ui:edit("simple", self.transformScaleXInput) == "active" and lk.isDown("return") then
+					component.scaleX = tonumber(self.transformScaleXInput.value)
+				end
+
+				sc().ui:label("SCALE Y " .. component.scaleY)
+
+				if sc().ui:edit("simple", self.transformScaleYInput) == "active" and lk.isDown("return") then
+					component.scaleY = tonumber(self.transformScaleYInput.value)
+				end
 			elseif component.name == "spriterenderer" then
 				sc().ui:label("Sprite Renderer")
 
@@ -128,6 +159,12 @@ function EntityPanel:draw()
 					removeComponent(self.currentEntity, component.name)
 				end
 			end
+		end
+
+		sc().ui:spacing(1)
+
+		if sc().ui:button("Delete Entity") then
+			self:deleteEntity(self.currentEntity)
 		end
 	end
 end

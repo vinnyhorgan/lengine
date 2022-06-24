@@ -7,6 +7,10 @@ function ViewportPanel:new()
 	self.canvas = lg.newCanvas(self.width, self.height)
 
 	self.gizmo = Gizmo()
+
+	if sc().settings.filterInput.value == "pixel" then
+		lg.setDefaultFilter("nearest", "nearest")
+	end
 end
 
 function ViewportPanel:resizeCanvas(width, height)
@@ -44,7 +48,7 @@ function ViewportPanel:draw()
 				if spriterenderer then
 					local texture = sc().scene.imageCache[entity.id]
 					if texture then
-						lg.draw(texture, transform.x, transform.y)
+						lg.draw(texture, transform.x, transform.y, transform.rotation, transform.scaleX, transform.scaleY)
 					end
 				end
 

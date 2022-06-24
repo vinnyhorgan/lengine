@@ -17,6 +17,10 @@ function game:enter(prev, args)
 
 	file:close()
 
+	if self.settings.filter == "pixel" then
+		lg.setDefaultFilter("nearest", "nearest")
+	end
+
 	self.imageCache = {}
 	self.scriptCache = {}
 
@@ -76,7 +80,7 @@ function game:draw()
 			local texture = self.imageCache[entity.id]
 
 			if texture then
-				lg.draw(texture, transform.x, transform.y)
+				lg.draw(texture, transform.x, transform.y, transform.rotation, transform.scaleX, transform.scaleY)
 			end
 		end
 

@@ -3,12 +3,12 @@ editor = {}
 function editor:enter()
 	self.ui = nuklear.newUI()
 
+	self.console = ConsolePanel()
+	self.settings = SettingsPanel()
 	self.scene = ScenePanel()
 	self.entity = EntityPanel()
 	self.viewport = ViewportPanel()
 	self.filesystem = FilesystemPanel()
-	self.console = ConsolePanel()
-	self.settings = SettingsPanel()
 	self.about = AboutPanel()
 	self.input = InputPanel()
 end

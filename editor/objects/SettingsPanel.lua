@@ -6,6 +6,7 @@ function SettingsPanel:new()
 	self.runCommandInput = {value = ""}
 	self.editCommandInput = {value = ""}
 	self.backgroundColor = nuklear.colorRGBA(0, 0, 0)
+	self.filterInput = {value = ""}
 
 	self:load()
 end
@@ -19,6 +20,7 @@ function SettingsPanel:load()
 		self.runCommandInput.value = settingsTable.runCommand
 		self.editCommandInput.value = settingsTable.editCommand
 		self.backgroundColor = nuklear.colorRGBA(settingsTable.backgroundColor.r, settingsTable.backgroundColor.g, settingsTable.backgroundColor.b)
+		self.filterInput.value = settingsTable.filter
 
 		sc().console:log("Loaded settings")
 	else
@@ -32,7 +34,8 @@ function SettingsPanel:save()
 	local settingsTable = {
 		runCommand = self.runCommandInput.value,
 		editCommand = self.editCommandInput.value,
-		backgroundColor = {r = r, g = g, b = b}
+		backgroundColor = {r = r, g = g, b = b},
+		filter = self.filterInput.value
 	}
 
 	local success, message = lf.write(project .. "/settings.json", json.encode(settingsTable))
@@ -52,6 +55,15 @@ function SettingsPanel:draw()
 		sc().ui:edit("simple", self.runCommandInput)
 		sc().ui:label("Code editor command")
 		sc().ui:edit("simple", self.editCommandInput)
+
+		sc().ui:treePop()
+	end
+
+	if sc().ui:treePush("node", "Graphics") then
+		sc().ui:layoutRow("dynamic", 30, 1)
+
+		sc().ui:label("Filter ('blur', 'pixel')")
+		sc().ui:edit("simple", self.filterInput)
 
 		sc().ui:treePop()
 	end
