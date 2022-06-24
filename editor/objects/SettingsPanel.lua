@@ -7,6 +7,8 @@ function SettingsPanel:new()
 	self.editCommandInput = {value = ""}
 	self.backgroundColor = nuklear.colorRGBA(0, 0, 0)
 	self.filterInput = {value = ""}
+	self.widthInput = {value = ""}
+	self.heightInput = {value = ""}
 
 	self:load()
 end
@@ -21,6 +23,8 @@ function SettingsPanel:load()
 		self.editCommandInput.value = settingsTable.editCommand
 		self.backgroundColor = nuklear.colorRGBA(settingsTable.backgroundColor.r, settingsTable.backgroundColor.g, settingsTable.backgroundColor.b)
 		self.filterInput.value = settingsTable.filter
+		self.widthInput.value = settingsTable.width
+		self.heightInput.value = settingsTable.height
 
 		sc().console:log("Loaded settings")
 	else
@@ -35,7 +39,9 @@ function SettingsPanel:save()
 		runCommand = self.runCommandInput.value,
 		editCommand = self.editCommandInput.value,
 		backgroundColor = {r = r, g = g, b = b},
-		filter = self.filterInput.value
+		filter = self.filterInput.value,
+		width = self.widthInput.value,
+		height = self.heightInput.value
 	}
 
 	local success, message = lf.write(project .. "/settings.json", json.encode(settingsTable))
@@ -61,6 +67,12 @@ function SettingsPanel:draw()
 
 	if sc().ui:treePush("node", "Graphics") then
 		sc().ui:layoutRow("dynamic", 30, 1)
+
+		sc().ui:label("Window Width")
+		sc().ui:edit("simple", self.widthInput)
+
+		sc().ui:label("Window Height")
+		sc().ui:edit("simple", self.heightInput)
 
 		sc().ui:label("Filter ('blur', 'pixel')")
 		sc().ui:edit("simple", self.filterInput)

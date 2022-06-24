@@ -8,6 +8,10 @@ function ViewportPanel:new()
 
 	self.gizmo = Gizmo()
 
+	self.cameraPointer = {x = 0, y = 0}
+
+	self.camera = Camera()
+
 	if sc().settings.filterInput.value == "pixel" then
 		lg.setDefaultFilter("nearest", "nearest")
 	end
@@ -28,16 +32,46 @@ function ViewportPanel:draw()
 	w = w - 20
 	h = h - 45
 
-	local mouseX = lm.getX() - x - 11
-	local mouseY = lm.getY() - y - 37
+	local mouseX, mouseY = self.camera:worldCoords(lm.getX(), lm.getY() + 75)
 
 	if w ~= self.width or h ~= self.height then
 		self:resizeCanvas(w, h)
 	end
 
+	if lk.isDown("up") then
+		self.cameraPointer.y = self.cameraPointer.y - 2
+	elseif lk.isDown("down") then
+		self.cameraPointer.y = self.cameraPointer.y + 2
+	end
+
+	if lk.isDown("left") then
+		self.cameraPointer.x = self.cameraPointer.x - 2
+	elseif lk.isDown("right") then
+		self.cameraPointer.x = self.cameraPointer.x + 2
+	end
+
+	if lk.isDown("w") then
+		self.camera.scale = self.camera.scale + 0.01
+	elseif lk.isDown("s") then
+		self.camera.scale = self.camera.scale - 0.01
+	end
+
+	self.camera:lookAt(self.cameraPointer.x, self.cameraPointer.y)
+
 	lg.setCanvas(self.canvas)
 		r, g, b = nuklear.colorParseRGBA(sc().settings.backgroundColor)
 		lg.clear(r/255, g/255, b/255)
+
+		self.camera:attach(0, 0, self.width, self.height)
+
+		lg.setColor(0, 0, 0)
+		lg.line(-10000, 0, 10000, 0)
+		lg.line(0, -10000, 0, 10000)
+
+		lg.rectangle("line", 0, 0, sc().settings.widthInput.value, sc().settings.heightInput.value)
+
+		lg.rectangle("fill", mouseX, mouseY, 1, 1)
+		lg.setColor(1, 1, 1)
 
 		if sc().scene.currentScene then
 			for _, entity in pairs(sc().scene.currentScene.entities) do
@@ -63,6 +97,8 @@ function ViewportPanel:draw()
 				end
 			end
 		end
+
+		self.camera:detach()
 	lg.setCanvas()
 
 	sc().ui:image(self.canvas)

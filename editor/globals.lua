@@ -3,6 +3,7 @@ state = require("lib/gamestate")
 Object = require("lib/classic")
 nuklear = require("nuklear")
 json = require("lib/json")
+Camera = require("lib/camera")
 
 lg = love.graphics
 lf = love.filesystem

@@ -17,6 +17,8 @@ function game:enter(prev, args)
 
 	file:close()
 
+	lw.setMode(self.settings.width, self.settings.height)
+
 	if self.settings.filter == "pixel" then
 		lg.setDefaultFilter("nearest", "nearest")
 	end
